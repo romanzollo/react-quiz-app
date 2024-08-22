@@ -5,6 +5,7 @@ import Main from './Main';
 import Loader from './Loader';
 import Error from './Error';
 import StartScreen from './StartScreen';
+import Question from './Question';
 
 const initialState = {
     questions: [],
@@ -28,6 +29,12 @@ function reducer(state, action) {
                 status: 'error',
             };
 
+        case 'start':
+            return {
+                ...state,
+                status: 'active',
+            };
+
         default:
             throw new Error('Action unknown');
     }
@@ -36,7 +43,7 @@ function reducer(state, action) {
 function App() {
     const [{ questions, status }, dispatch] = useReducer(reducer, initialState);
 
-    // производная для количество вопросов
+    // вычисляем производную для количество вопросов
     const numQuestions = questions.length;
 
     useEffect(() => {
@@ -53,9 +60,14 @@ function App() {
             <Main>
                 {status === 'loading' && <Loader />}
                 {status === 'error' && <Error />}
+
                 {status === 'ready' && (
-                    <StartScreen numQuestions={numQuestions} />
+                    <StartScreen
+                        numQuestions={numQuestions}
+                        dispatch={dispatch}
+                    />
                 )}
+                {status === 'active' && <Question />}
             </Main>
         </div>
     );

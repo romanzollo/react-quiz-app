@@ -7,6 +7,7 @@ import Error from './Error';
 import StartScreen from './StartScreen';
 import Question from './Question';
 import NextButton from './NextButton';
+import Progress from './Progress';
 
 const initialState = {
     questions: [],
@@ -67,13 +68,19 @@ function reducer(state, action) {
 }
 
 function App() {
-    const [{ questions, status, index, answer }, dispatch] = useReducer(
+    const [{ questions, status, index, answer, points }, dispatch] = useReducer(
         reducer,
         initialState
     );
 
     // вычисляем производную для количество вопросов
     const numQuestions = questions.length;
+
+    // вычисляем максимальный индекс вопроса
+    const maxPossiblePoints = questions.reduce(
+        (prev, cur) => prev + cur.points,
+        0
+    );
 
     useEffect(() => {
         fetch('http://localhost:8000/questions')
@@ -98,6 +105,13 @@ function App() {
                 )}
                 {status === 'active' && (
                     <>
+                        <Progress
+                            index={index}
+                            numQuestions={numQuestions}
+                            points={points}
+                            maxPossiblePoints={maxPossiblePoints}
+                            answer={answer}
+                        />
                         <Question
                             // передаем вопрос по текущему индексу
                             question={questions[index]}

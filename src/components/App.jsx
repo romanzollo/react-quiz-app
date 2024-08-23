@@ -6,13 +6,14 @@ import Loader from './Loader';
 import Error from './Error';
 import StartScreen from './StartScreen';
 import Question from './Question';
+import NextButton from './NextButton';
 
 const initialState = {
     questions: [],
 
     // 'loading', 'error', 'ready', 'active', 'finished'
     status: 'loading',
-    index: 0,
+    index: 0, // индекс вопроса
     answer: null, // индекс ответа
     points: 0, // количество очков за правильные ответы
 };
@@ -53,6 +54,13 @@ function reducer(state, action) {
                         : state.points,
             };
 
+        case 'nextQuestion':
+            return {
+                ...state,
+                index: state.index + 1,
+                answer: null, // очищаем индекс выбранного ответа
+            };
+
         default:
             throw new Error('Action unknown');
     }
@@ -89,11 +97,15 @@ function App() {
                     />
                 )}
                 {status === 'active' && (
-                    <Question
-                        question={questions[index]}
-                        dispatch={dispatch}
-                        answer={answer}
-                    />
+                    <>
+                        <Question
+                            // передаем вопрос по текущему индексу
+                            question={questions[index]}
+                            dispatch={dispatch}
+                            answer={answer}
+                        />
+                        <NextButton dispatch={dispatch} answer={answer} />
+                    </>
                 )}
             </Main>
         </div>

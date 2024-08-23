@@ -8,6 +8,7 @@ import StartScreen from './StartScreen';
 import Question from './Question';
 import NextButton from './NextButton';
 import Progress from './Progress';
+import FinishScreen from './FinishScreen';
 
 const initialState = {
     questions: [],
@@ -17,6 +18,7 @@ const initialState = {
     index: 0, // индекс вопроса
     answer: null, // индекс ответа
     points: 0, // количество очков за правильные ответы
+    hightscore: 0, // высший балл
 };
 
 function reducer(state, action) {
@@ -62,16 +64,25 @@ function reducer(state, action) {
                 answer: null, // очищаем индекс выбранного ответа
             };
 
+        case 'finish':
+            return {
+                ...state,
+                status: 'finished',
+                // вычисляем высший балл за все вопросы
+                hightscore:
+                    state.points > state.hightscore
+                        ? state.points
+                        : state.hightscore,
+            };
+
         default:
             throw new Error('Action unknown');
     }
 }
 
 function App() {
-    const [{ questions, status, index, answer, points }, dispatch] = useReducer(
-        reducer,
-        initialState
-    );
+    const [{ questions, status, index, answer, points, hightscore }, dispatch] =
+        useReducer(reducer, initialState);
 
     // вычисляем производную для количество вопросов
     const numQuestions = questions.length;
@@ -118,8 +129,20 @@ function App() {
                             dispatch={dispatch}
                             answer={answer}
                         />
-                        <NextButton dispatch={dispatch} answer={answer} />
+                        <NextButton
+                            dispatch={dispatch}
+                            answer={answer}
+                            index={index}
+                            numQuestions={numQuestions}
+                        />
                     </>
+                )}
+                {status === 'finished' && (
+                    <FinishScreen
+                        points={points}
+                        maxPossiblePoints={maxPossiblePoints}
+                        hightscore={hightscore}
+                    />
                 )}
             </Main>
         </div>

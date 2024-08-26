@@ -9,6 +9,10 @@ import Question from './Question';
 import NextButton from './NextButton';
 import Progress from './Progress';
 import FinishScreen from './FinishScreen';
+import Footer from './Footer';
+import Timer from './Timer';
+
+const SECS_PER_QUESTION = 10;
 
 const initialState = {
     questions: [],
@@ -19,6 +23,7 @@ const initialState = {
     answer: null, // индекс ответа
     points: 0, // количество очков за правильные ответы
     hightscore: 0, // высший балл
+    secondsRemaining: null,
 };
 
 function reducer(state, action) {
@@ -40,6 +45,8 @@ function reducer(state, action) {
             return {
                 ...state,
                 status: 'active',
+                // вычисляем количество вопросов и прибавляем количество секунд за вопрос
+                secondsRemaining: state.questions.length * SECS_PER_QUESTION,
             };
 
         case 'newAnswer':
@@ -83,14 +90,33 @@ function reducer(state, action) {
                 status: 'ready',
             };
 
+        case 'secondsRemaining':
+            return {
+                ...state,
+                secondsRemaining: state.secondsRemaining - 1,
+                // завершаем тест, если время вышло
+                status:
+                    state.secondsRemaining === 0 ? 'finished' : state.status,
+            };
+
         default:
             throw new Error('Action unknown');
     }
 }
 
 function App() {
-    const [{ questions, status, index, answer, points, hightscore }, dispatch] =
-        useReducer(reducer, initialState);
+    const [
+        {
+            questions,
+            status,
+            index,
+            answer,
+            points,
+            hightscore,
+            secondsRemaining,
+        },
+        dispatch,
+    ] = useReducer(reducer, initialState);
 
     // вычисляем производную для количество вопросов
     const numQuestions = questions.length;
@@ -137,12 +163,18 @@ function App() {
                             dispatch={dispatch}
                             answer={answer}
                         />
-                        <NextButton
-                            dispatch={dispatch}
-                            answer={answer}
-                            index={index}
-                            numQuestions={numQuestions}
-                        />
+                        <Footer>
+                            <Timer
+                                dispatch={dispatch}
+                                secondsRemaining={secondsRemaining}
+                            />
+                            <NextButton
+                                dispatch={dispatch}
+                                answer={answer}
+                                index={index}
+                                numQuestions={numQuestions}
+                            />
+                        </Footer>
                     </>
                 )}
                 {status === 'finished' && (

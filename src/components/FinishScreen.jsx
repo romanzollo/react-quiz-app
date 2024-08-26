@@ -1,4 +1,4 @@
-function FinishScreen({ points, maxPossiblePoints, hightscore }) {
+function FinishScreen({ points, maxPossiblePoints, hightscore, dispatch }) {
     // процентное соотношение количества баллов и максимального количества баллов
     const percentage = (points / maxPossiblePoints) * 100;
 
@@ -16,6 +16,14 @@ function FinishScreen({ points, maxPossiblePoints, hightscore }) {
                 {maxPossiblePoints} ({Math.ceil(percentage)}%)
             </p>
             <p className="highscore">(Highscore: {hightscore} points)</p>
+            <button
+                className="btn btn-ui"
+                onClick={() => {
+                    dispatch({ type: 'restart' });
+                }}
+            >
+                Restart quiz
+            </button>
         </>
     );
 }

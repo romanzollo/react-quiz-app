@@ -1,8 +1,4 @@
-import { useQuiz } from '../hooks/useQuiz';
-
-function NextButton() {
-    const { dispatch, answer, index, numQuestions } = useQuiz();
-
+function NextButton({ dispatch, answer, index, numQuestions }) {
     if (answer === null) return;
 
     // показываем кнопку "Next" только если вопросы не закончились

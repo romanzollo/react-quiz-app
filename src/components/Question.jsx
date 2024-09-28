@@ -1,11 +1,17 @@
 import Options from './Options';
 
-function Question({ question, dispatch, answer }) {
+import { useQuiz } from '../hooks/useQuiz';
+
+function Question() {
+    const { index, questions } = useQuiz();
+
+    const question = questions[index];
+
     return (
         <div>
             <h4>{question.question}</h4>
 
-            <Options question={question} dispatch={dispatch} answer={answer} />
+            <Options question={question} />
         </div>
     );
 }

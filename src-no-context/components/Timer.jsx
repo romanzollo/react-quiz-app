@@ -1,10 +1,6 @@
 import { useEffect } from 'react';
 
-import { useQuiz } from '../hooks/useQuiz';
-
-function Timer() {
-    const { secondsRemaining, dispatch } = useQuiz();
-
+function Timer({ dispatch, secondsRemaining }) {
     // вычисляем минуты и секунды
     const mins = Math.floor(secondsRemaining / 60);
     const secs = secondsRemaining % 60;

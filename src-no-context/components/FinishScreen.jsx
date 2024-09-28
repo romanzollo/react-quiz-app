@@ -1,8 +1,4 @@
-import { useQuiz } from '../hooks/useQuiz';
-
-function FinishScreen() {
-    const { points, maxPossiblePoints, hightscore, dispatch } = useQuiz();
-
+function FinishScreen({ points, maxPossiblePoints, hightscore, dispatch }) {
     // процентное соотношение количества баллов и максимального количества баллов
     const percentage = (points / maxPossiblePoints) * 100;
 
